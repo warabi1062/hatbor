@@ -10,7 +10,9 @@ on:
 jobs:
   build:
     name: Build for StandaloneOSX
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    outputs:
+      buildVersion: ${{ steps.buildStep.outputs.buildVersion }}
 
     steps:
       - name: Checkout repository
@@ -35,6 +37,27 @@ jobs:
           buildName: hatbor
           versioning: Semantic
 
+      - name: Upload raw build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StandaloneOSX
+          path: build/StandaloneOSX
+
+  sign:
+    name: Sign and package macOS build
+    runs-on: macos-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: StandaloneOSX
+          path: build/StandaloneOSX
+
       - name: Import Apple Certificate
         uses: apple-actions/import-codesign-certs@v1
         with:
@@ -50,12 +73,12 @@ jobs:
           MAC_BUILD_PATH: ${{ format('{0}/build/StandaloneOSX', github.workspace) }}
           PROJECT_NAME: hatbor
           BUNDLE_IDENTIFIER: com.neoneobeam.hatbor
-          VERSION: ${{ steps.buildStep.outputs.buildVersion }}
+          VERSION: ${{ needs.build.outputs.buildVersion }}
         run: ./post-process-build-mac.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: hatbor-macOS-${{ steps.buildStep.outputs.buildVersion }}
+          name: hatbor-macOS-${{ needs.build.outputs.buildVersion }}
           path: hatbor.dmg
 
       - name: Upload Release Asset
@@ -66,5 +89,5 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./hatbor.dmg
-          asset_name: hatbor-macOS-${{ steps.buildStep.outputs.buildVersion }}.dmg
+          asset_name: hatbor-macOS-${{ needs.build.outputs.buildVersion }}.dmg
           asset_content_type: application/octet-stream
