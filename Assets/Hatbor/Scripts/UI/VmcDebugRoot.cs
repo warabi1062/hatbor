@@ -12,7 +12,7 @@ namespace Hatbor.UI
     public class VmcDebugRoot : IStartable, ITickable, IDisposable
     {
         readonly UIDocument uiDocument;
-        readonly VmcServerConfig config;
+        readonly DebugConfig debugConfig;
         readonly VmcServer server;
 
         readonly CompositeDisposable disposables = new();
@@ -21,17 +21,17 @@ namespace Hatbor.UI
 
         [Inject]
         public VmcDebugRoot(UIDocument uiDocument,
-            VmcServerConfig config,
+            DebugConfig debugConfig,
             VmcServer server)
         {
             this.uiDocument = uiDocument;
-            this.config = config;
+            this.debugConfig = debugConfig;
             this.server = server;
         }
 
         void IStartable.Start()
         {
-            config.DebugEnabled
+            debugConfig.VmcDebugEnabled
                 .Subscribe(enabled =>
                 {
                     uiDocument.enabled = enabled;

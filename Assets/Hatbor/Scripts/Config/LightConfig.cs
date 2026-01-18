@@ -10,18 +10,15 @@ namespace Hatbor.Config
         public string PersistentKey => "LightConfig";
 
         [SerializeField] Vector3ReactiveProperty direction = new(new Vector3(50, 180, 0));
-        [SerializeField] ColorReactiveProperty color = new(UnityEngine.Color.white);
-        [SerializeField] FloatReactiveProperty intensity = new(2f);
-        [SerializeField] FloatReactiveProperty bounceIntensity = new(1f);
+        [SerializeField] FloatReactiveProperty temperature = new(6500f);
+        [SerializeField] FloatReactiveProperty intensity = new(1f);
 
-        [ConfigProperty("Direction")]
+        [Vector3ConfigProperty("Direction", 50f, 180f, 0f)]
         public ReactiveProperty<Vector3> Direction => direction;
-        [ConfigProperty("Color")]
-        public ReactiveProperty<Color> Color => color;
-        [ConfigProperty("Intensity")]
+        [TemperatureConfigProperty("Temperature")]
+        public ReactiveProperty<float> Temperature => temperature;
+        [SliderConfigProperty("Intensity", 1f, 0f, 10f)]
         public ReactiveProperty<float> Intensity => intensity;
-        [ConfigProperty("Indirect Multiplier")]
-        public ReactiveProperty<float> BounceIntensity => bounceIntensity;
 
 
     }

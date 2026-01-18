@@ -1,10 +1,8 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Hatbor.Config;
 using Hatbor.Rig;
 using UniGLTF;
-using UniRx;
 using UniVRM10;
 using UnityEngine;
 using VContainer;
@@ -15,19 +13,18 @@ namespace Hatbor.Avatar
 {
     public sealed class Avatar : IAsyncStartable, ITickable, IDisposable
     {
+        static readonly Vector3 Position = new(0f, -1f, -2f);
+
         readonly string path;
         readonly AvatarRig rig;
-        readonly AvatarConfig config;
-        readonly CompositeDisposable disposables = new();
 
         Vrm10Instance instance;
 
         [Inject]
-        public Avatar(string path, AvatarRig rig, AvatarConfig config)
+        public Avatar(string path, AvatarRig rig)
         {
             this.path = path;
             this.rig = rig;
-            this.config = config;
         }
 
         async UniTask IAsyncStartable.StartAsync(CancellationToken cancellation)
@@ -36,9 +33,7 @@ namespace Hatbor.Avatar
             Setup(instance.GetComponent<RuntimeGltfInstance>());
             rig.Initialize(instance);
 
-            config.Position
-                .Subscribe(pos => instance.transform.position = pos)
-                .AddTo(disposables);
+            instance.transform.position = Position;
         }
 
         void ITickable.Tick()
@@ -49,7 +44,6 @@ namespace Hatbor.Avatar
 
         void IDisposable.Dispose()
         {
-            disposables.Dispose();
             if (instance == null) return;
             Object.Destroy(instance.gameObject);
             instance = null;

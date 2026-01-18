@@ -1,5 +1,6 @@
 using System;
 using UniRx;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hatbor.UI
@@ -17,6 +18,7 @@ namespace Hatbor.UI
         public PropertyField()
         {
             field = new TField();
+            field.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
             hierarchy.Add(field);
         }
 

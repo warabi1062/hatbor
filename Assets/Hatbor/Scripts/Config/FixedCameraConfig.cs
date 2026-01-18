@@ -16,11 +16,11 @@ namespace Hatbor.Config
         [SerializeField]
         FloatReactiveProperty fieldOfView = new (30f);
 
-        [ConfigProperty("Position")]
+        [Vector3ConfigProperty("Position", 0f, 0f, 0f)]
         public ReactiveProperty<Vector3> CameraPosition => cameraPosition;
-        [ConfigProperty("Rotation")]
+        [Vector3ConfigProperty("Rotation", 0f, 180f, 0f)]
         public ReactiveProperty<Vector3> CameraRotation => cameraRotation;
-        [ConfigProperty("Field of View")]
+        [SliderConfigProperty("FOV", 30f, 1f, 120f)]
         public ReactiveProperty<float> FieldOfView => fieldOfView;
     }
 }

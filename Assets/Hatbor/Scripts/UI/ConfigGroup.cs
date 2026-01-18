@@ -18,7 +18,18 @@ namespace Hatbor.UI
         {
             this.fileBrowser = fileBrowser;
 
-            label = new Label();
+            style.paddingRight = 16;
+
+            label = new Label
+            {
+                style =
+                {
+                    fontSize = 16,
+                    unityFontStyleAndWeight = FontStyle.Bold,
+                    marginTop = 12,
+                    marginBottom = 4
+                }
+            };
             hierarchy.Add(label);
             container = new VisualElement();
             hierarchy.Add(container);
@@ -61,12 +72,20 @@ namespace Hatbor.UI
             {
                 (ReactiveProperty<bool> p, _) =>
                     CreateFieldAndBind<bool, Toggle>(p, attr.Label),
+                (ReactiveProperty<float> p, TemperatureConfigPropertyAttribute a) =>
+                    CreateTemperatureFieldAndBind(p, a),
+                (ReactiveProperty<float> p, SliderConfigPropertyAttribute a) =>
+                    CreateSliderFieldAndBind(p, a),
                 (ReactiveProperty<float> p, _) =>
                     CreateFieldAndBind<float, FloatField>(p, attr.Label),
                 (ReactiveProperty<int> p, _) =>
-                    CreateFieldAndBind<int, IntegerField>(p, attr.Label),
+                    CreateIntFieldAndBind(p, attr),
+                (ReactiveProperty<Vector2Int> p, Vector2IntConfigPropertyAttribute a) =>
+                    CreateVector2IntFieldAndBind(p, a),
                 (ReactiveProperty<Vector2Int> p, _) =>
                     CreateFieldAndBind<Vector2Int, Vector2IntField>(p, attr.Label),
+                (ReactiveProperty<Vector3> p, Vector3ConfigPropertyAttribute a) =>
+                    CreateVector3FieldAndBind(p, a),
                 (ReactiveProperty<Vector3> p, _) =>
                     CreateFieldAndBind<Vector3, Vector3Field>(p, attr.Label),
                 (ReactiveProperty<Color> p, _) =>
@@ -87,6 +106,171 @@ namespace Hatbor.UI
             {
                 Label = label
             };
+            return (propertyField, propertyField.Bind(property));
+        }
+
+        static (VisualElement, IDisposable) CreateIntFieldAndBind(ReactiveProperty<int> property, ConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<int, IntegerField>
+            {
+                Label = attr.Label
+            };
+            var intField = propertyField.Q<IntegerField>();
+            intField.isDelayed = attr.IsDelayed;
+            return (propertyField, propertyField.Bind(property));
+        }
+
+        static (VisualElement, IDisposable) CreateSliderFieldAndBind(ReactiveProperty<float> property, SliderConfigPropertyAttribute attr)
+        {
+            var slider = new Slider(attr.Label, attr.Min, attr.Max)
+            {
+                showInputField = true
+            };
+            slider.style.flexDirection = FlexDirection.Column;
+            slider.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+            slider.labelElement.style.minWidth = StyleKeyword.Auto;
+
+            var inputContainer = slider.Q(className: "unity-base-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.height = StyleKeyword.Auto;
+            }
+
+            var disposables = new CompositeDisposable();
+            slider.RegisterValueChangedCallback(evt => property.Value = evt.newValue);
+            property.Subscribe(x => slider.SetValueWithoutNotify(x)).AddTo(disposables);
+
+            slider.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = attr.DefaultValue;
+                }
+            });
+
+            return (slider, disposables);
+        }
+
+        static (VisualElement, IDisposable) CreateTemperatureFieldAndBind(ReactiveProperty<float> property, TemperatureConfigPropertyAttribute attr)
+        {
+            var field = new TemperatureField
+            {
+                Label = attr.Label,
+                Min = attr.Min,
+                Max = attr.Max
+            };
+            return (field, field.Bind(property, attr.DefaultValue));
+        }
+
+        static (VisualElement, IDisposable) CreateVector2IntFieldAndBind(ReactiveProperty<Vector2Int> property, Vector2IntConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<Vector2Int, Vector2IntField>
+            {
+                Label = attr.Label
+            };
+
+            var vector2IntField = propertyField.Q<Vector2IntField>();
+            vector2IntField.style.flexDirection = FlexDirection.Column;
+            vector2IntField.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var defaultValue = new Vector2Int(attr.DefaultX, attr.DefaultY);
+            vector2IntField.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = defaultValue;
+                }
+            });
+
+            var inputContainer = vector2IntField.Q(className: "unity-composite-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.flexDirection = FlexDirection.Row;
+                inputContainer.style.marginTop = 4;
+            }
+
+            var intFields = propertyField.Query<IntegerField>().ToList();
+            foreach (var f in intFields)
+            {
+                f.style.flexGrow = 1;
+                f.style.flexShrink = 1;
+                f.style.flexBasis = 0;
+                f.labelElement.style.minWidth = 15;
+                f.labelElement.style.paddingRight = 4;
+            }
+
+            var defaults = new[] { attr.DefaultX, attr.DefaultY };
+
+            for (var i = 0; i < intFields.Count && i < 2; i++)
+            {
+                var index = i;
+                intFields[i].labelElement.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (evt.clickCount == 2)
+                    {
+                        var v = property.Value;
+                        v[index] = defaults[index];
+                        property.Value = v;
+                    }
+                });
+            }
+
+            return (propertyField, propertyField.Bind(property));
+        }
+
+        static (VisualElement, IDisposable) CreateVector3FieldAndBind(ReactiveProperty<Vector3> property, Vector3ConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<Vector3, Vector3Field>
+            {
+                Label = attr.Label
+            };
+
+            var vector3Field = propertyField.Q<Vector3Field>();
+            vector3Field.style.flexDirection = FlexDirection.Column;
+            vector3Field.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var defaultValue = new Vector3(attr.DefaultX, attr.DefaultY, attr.DefaultZ);
+            vector3Field.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = defaultValue;
+                }
+            });
+
+            var inputContainer = vector3Field.Q(className: "unity-composite-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.flexDirection = FlexDirection.Row;
+                inputContainer.style.marginTop = 4;
+            }
+
+            var floatFields = propertyField.Query<FloatField>().ToList();
+            foreach (var f in floatFields)
+            {
+                f.style.flexGrow = 1;
+                f.style.flexShrink = 1;
+                f.style.flexBasis = 0;
+                f.labelElement.style.minWidth = 15;
+                f.labelElement.style.paddingRight = 4;
+            }
+
+            var defaults = new[] { attr.DefaultX, attr.DefaultY, attr.DefaultZ };
+
+            for (var i = 0; i < floatFields.Count && i < 3; i++)
+            {
+                var index = i;
+                floatFields[i].labelElement.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (evt.clickCount == 2)
+                    {
+                        var v = property.Value;
+                        v[index] = defaults[index];
+                        property.Value = v;
+                    }
+                });
+            }
+
             return (propertyField, propertyField.Bind(property));
         }
 
