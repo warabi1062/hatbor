@@ -10,12 +10,15 @@ namespace Hatbor.Config
         public string PersistentKey => "RenderConfig";
 
         [SerializeField] Vector2IntReactiveProperty size = new(new Vector2Int(1920, 1080));
+        [SerializeField] IntReactiveProperty targetFrameRate = new(60);
         [SerializeField] BoolReactiveProperty enabledSharingTexture = new(true);
         [SerializeField] BoolReactiveProperty transparentBackground = new(true);
         [SerializeField] BoolReactiveProperty mirrorPreview = new(true);
 
         [Vector2IntConfigProperty("Size", 1920, 1080)]
         public ReactiveProperty<Vector2Int> Size => size;
+        [ConfigProperty("Target FPS", IsDelayed = true)]
+        public ReactiveProperty<int> TargetFrameRate => targetFrameRate;
 #if UNITY_STANDALONE_OSX
         [ConfigProperty("Syphon")]
 #elif UNITY_STANDALONE_WIN

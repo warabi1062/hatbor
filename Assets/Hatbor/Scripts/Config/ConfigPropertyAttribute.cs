@@ -7,6 +7,7 @@ namespace Hatbor.Config
     public class ConfigPropertyAttribute : PreserveAttribute
     {
         public string Label { get; }
+        public bool IsDelayed { get; set; }
 
         public ConfigPropertyAttribute(string label)
         {

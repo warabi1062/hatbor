@@ -77,7 +77,7 @@ namespace Hatbor.UI
                 (ReactiveProperty<float> p, _) =>
                     CreateFieldAndBind<float, FloatField>(p, attr.Label),
                 (ReactiveProperty<int> p, _) =>
-                    CreateFieldAndBind<int, IntegerField>(p, attr.Label),
+                    CreateIntFieldAndBind(p, attr),
                 (ReactiveProperty<Vector2Int> p, Vector2IntConfigPropertyAttribute a) =>
                     CreateVector2IntFieldAndBind(p, a),
                 (ReactiveProperty<Vector2Int> p, _) =>
@@ -104,6 +104,17 @@ namespace Hatbor.UI
             {
                 Label = label
             };
+            return (propertyField, propertyField.Bind(property));
+        }
+
+        static (VisualElement, IDisposable) CreateIntFieldAndBind(ReactiveProperty<int> property, ConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<int, IntegerField>
+            {
+                Label = attr.Label
+            };
+            var intField = propertyField.Q<IntegerField>();
+            intField.isDelayed = attr.IsDelayed;
             return (propertyField, propertyField.Bind(property));
         }
 
