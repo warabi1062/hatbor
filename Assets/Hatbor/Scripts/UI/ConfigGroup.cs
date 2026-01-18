@@ -18,6 +18,8 @@ namespace Hatbor.UI
         {
             this.fileBrowser = fileBrowser;
 
+            style.paddingRight = 16;
+
             label = new Label
             {
                 style =
@@ -124,7 +126,16 @@ namespace Hatbor.UI
             {
                 showInputField = true
             };
+            slider.style.flexDirection = FlexDirection.Column;
             slider.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+            slider.labelElement.style.minWidth = StyleKeyword.Auto;
+
+            var inputContainer = slider.Q(className: "unity-base-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.height = StyleKeyword.Auto;
+            }
+
             var disposables = new CompositeDisposable();
             slider.RegisterValueChangedCallback(evt => property.Value = evt.newValue);
             property.Subscribe(x => slider.SetValueWithoutNotify(x)).AddTo(disposables);
@@ -181,9 +192,9 @@ namespace Hatbor.UI
             var intFields = propertyField.Query<IntegerField>().ToList();
             foreach (var f in intFields)
             {
-                f.style.flexGrow = 0;
-                f.style.flexShrink = 0;
-                f.style.width = 120;
+                f.style.flexGrow = 1;
+                f.style.flexShrink = 1;
+                f.style.flexBasis = 0;
                 f.labelElement.style.minWidth = 15;
                 f.labelElement.style.paddingRight = 4;
             }
@@ -237,9 +248,9 @@ namespace Hatbor.UI
             var floatFields = propertyField.Query<FloatField>().ToList();
             foreach (var f in floatFields)
             {
-                f.style.flexGrow = 0;
-                f.style.flexShrink = 0;
-                f.style.width = 120;
+                f.style.flexGrow = 1;
+                f.style.flexShrink = 1;
+                f.style.flexBasis = 0;
                 f.labelElement.style.minWidth = 15;
                 f.labelElement.style.paddingRight = 4;
             }

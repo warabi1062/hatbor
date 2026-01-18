@@ -76,7 +76,7 @@ namespace Hatbor.UI
             {
                 style =
                 {
-                    width = 50,
+                    width = 30,
                     height = 20,
                     marginLeft = 4
                 }
