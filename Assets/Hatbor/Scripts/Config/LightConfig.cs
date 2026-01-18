@@ -12,7 +12,6 @@ namespace Hatbor.Config
         [SerializeField] Vector3ReactiveProperty direction = new(new Vector3(50, 180, 0));
         [SerializeField] FloatReactiveProperty temperature = new(6500f);
         [SerializeField] FloatReactiveProperty intensity = new(2f);
-        [SerializeField] FloatReactiveProperty bounceIntensity = new(1f);
 
         [ConfigProperty("Direction")]
         public ReactiveProperty<Vector3> Direction => direction;
@@ -20,8 +19,6 @@ namespace Hatbor.Config
         public ReactiveProperty<float> Temperature => temperature;
         [ConfigProperty("Intensity")]
         public ReactiveProperty<float> Intensity => intensity;
-        [ConfigProperty("Indirect Multiplier")]
-        public ReactiveProperty<float> BounceIntensity => bounceIntensity;
 
 
     }

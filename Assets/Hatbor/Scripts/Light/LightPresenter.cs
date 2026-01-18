@@ -26,6 +26,7 @@ namespace Hatbor.Light
         {
             light.useColorTemperature = true;
             light.color = Color.white;
+            light.bounceIntensity = 0.1f;
 
             config.Direction
                 .Subscribe(x => light.transform.rotation = Quaternion.Euler(x))
@@ -35,9 +36,6 @@ namespace Hatbor.Light
                 .AddTo(disposables);
             config.Intensity
                 .Subscribe(x => light.intensity = x)
-                .AddTo(disposables);
-            config.BounceIntensity
-                .Subscribe(x => light.bounceIntensity = x)
                 .AddTo(disposables);
         }
 
