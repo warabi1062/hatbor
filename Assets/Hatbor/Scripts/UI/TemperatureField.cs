@@ -77,7 +77,7 @@ namespace Hatbor.UI
             sliderRow.Add(valueLabel);
         }
 
-        public IDisposable Bind(ReactiveProperty<float> property)
+        public IDisposable Bind(ReactiveProperty<float> property, float defaultValue)
         {
             var disposables = new CompositeDisposable();
 
@@ -92,6 +92,14 @@ namespace Hatbor.UI
                 valueLabel.text = $"{temp:F0} K";
                 preview.style.backgroundColor = TemperatureToColor(temp);
             }).AddTo(disposables);
+
+            label.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = defaultValue;
+                }
+            });
 
             return disposables;
         }

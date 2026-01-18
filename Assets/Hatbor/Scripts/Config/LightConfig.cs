@@ -11,13 +11,13 @@ namespace Hatbor.Config
 
         [SerializeField] Vector3ReactiveProperty direction = new(new Vector3(50, 180, 0));
         [SerializeField] FloatReactiveProperty temperature = new(6500f);
-        [SerializeField] FloatReactiveProperty intensity = new(2f);
+        [SerializeField] FloatReactiveProperty intensity = new(1f);
 
-        [ConfigProperty("Direction")]
+        [Vector3ConfigProperty("Direction", 50f, 180f, 0f)]
         public ReactiveProperty<Vector3> Direction => direction;
         [TemperatureConfigProperty("Temperature")]
         public ReactiveProperty<float> Temperature => temperature;
-        [ConfigProperty("Intensity")]
+        [SliderConfigProperty("Intensity", 1f, 0f, 10f)]
         public ReactiveProperty<float> Intensity => intensity;
 
 

@@ -71,6 +71,8 @@ namespace Hatbor.UI
                     CreateFieldAndBind<int, IntegerField>(p, attr.Label),
                 (ReactiveProperty<Vector2Int> p, _) =>
                     CreateFieldAndBind<Vector2Int, Vector2IntField>(p, attr.Label),
+                (ReactiveProperty<Vector3> p, Vector3ConfigPropertyAttribute a) =>
+                    CreateVector3FieldAndBind(p, a),
                 (ReactiveProperty<Vector3> p, _) =>
                     CreateFieldAndBind<Vector3, Vector3Field>(p, attr.Label),
                 (ReactiveProperty<Color> p, _) =>
@@ -103,6 +105,15 @@ namespace Hatbor.UI
             var disposables = new CompositeDisposable();
             slider.RegisterValueChangedCallback(evt => property.Value = evt.newValue);
             property.Subscribe(x => slider.SetValueWithoutNotify(x)).AddTo(disposables);
+
+            slider.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = attr.DefaultValue;
+                }
+            });
+
             return (slider, disposables);
         }
 
@@ -114,7 +125,34 @@ namespace Hatbor.UI
                 Min = attr.Min,
                 Max = attr.Max
             };
-            return (field, field.Bind(property));
+            return (field, field.Bind(property, attr.DefaultValue));
+        }
+
+        static (VisualElement, IDisposable) CreateVector3FieldAndBind(ReactiveProperty<Vector3> property, Vector3ConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<Vector3, Vector3Field>
+            {
+                Label = attr.Label
+            };
+
+            var floatFields = propertyField.Query<FloatField>().ToList();
+            var defaults = new[] { attr.DefaultX, attr.DefaultY, attr.DefaultZ };
+
+            for (var i = 0; i < floatFields.Count && i < 3; i++)
+            {
+                var index = i;
+                floatFields[i].labelElement.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (evt.clickCount == 2)
+                    {
+                        var v = property.Value;
+                        v[index] = defaults[index];
+                        property.Value = v;
+                    }
+                });
+            }
+
+            return (propertyField, propertyField.Bind(property));
         }
 
         static (VisualElement, IDisposable) CreateColorFieldAndBind(ReactiveProperty<Color> property, string label)

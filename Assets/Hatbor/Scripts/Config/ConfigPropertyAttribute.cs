@@ -30,11 +30,13 @@ namespace Hatbor.Config
     {
         public float Min { get; }
         public float Max { get; }
+        public float DefaultValue { get; }
 
-        public SliderConfigPropertyAttribute(string label, float min, float max) : base(label)
+        public SliderConfigPropertyAttribute(string label, float defaultValue, float min, float max) : base(label)
         {
             Min = min;
             Max = max;
+            DefaultValue = defaultValue;
         }
     }
 
@@ -43,11 +45,28 @@ namespace Hatbor.Config
     {
         public float Min { get; }
         public float Max { get; }
+        public float DefaultValue { get; }
 
-        public TemperatureConfigPropertyAttribute(string label, float min = 1000f, float max = 20000f) : base(label)
+        public TemperatureConfigPropertyAttribute(string label, float defaultValue = 6500f, float min = 1000f, float max = 20000f) : base(label)
         {
             Min = min;
             Max = max;
+            DefaultValue = defaultValue;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Vector3ConfigPropertyAttribute : ConfigPropertyAttribute
+    {
+        public float DefaultX { get; }
+        public float DefaultY { get; }
+        public float DefaultZ { get; }
+
+        public Vector3ConfigPropertyAttribute(string label, float defaultX = 0f, float defaultY = 0f, float defaultZ = 0f) : base(label)
+        {
+            DefaultX = defaultX;
+            DefaultY = defaultY;
+            DefaultZ = defaultZ;
         }
     }
 }
