@@ -14,7 +14,7 @@ namespace Hatbor.Config
         [SerializeField] BoolReactiveProperty transparentBackground = new(true);
         [SerializeField] BoolReactiveProperty mirrorPreview = new(true);
 
-        [ConfigProperty("Size")]
+        [Vector2IntConfigProperty("Size", 1920, 1080)]
         public ReactiveProperty<Vector2Int> Size => size;
 #if UNITY_STANDALONE_OSX
         [ConfigProperty("Syphon")]

@@ -69,6 +69,8 @@ namespace Hatbor.UI
                     CreateFieldAndBind<float, FloatField>(p, attr.Label),
                 (ReactiveProperty<int> p, _) =>
                     CreateFieldAndBind<int, IntegerField>(p, attr.Label),
+                (ReactiveProperty<Vector2Int> p, Vector2IntConfigPropertyAttribute a) =>
+                    CreateVector2IntFieldAndBind(p, a),
                 (ReactiveProperty<Vector2Int> p, _) =>
                     CreateFieldAndBind<Vector2Int, Vector2IntField>(p, attr.Label),
                 (ReactiveProperty<Vector3> p, Vector3ConfigPropertyAttribute a) =>
@@ -126,6 +128,33 @@ namespace Hatbor.UI
                 Max = attr.Max
             };
             return (field, field.Bind(property, attr.DefaultValue));
+        }
+
+        static (VisualElement, IDisposable) CreateVector2IntFieldAndBind(ReactiveProperty<Vector2Int> property, Vector2IntConfigPropertyAttribute attr)
+        {
+            var propertyField = new PropertyField<Vector2Int, Vector2IntField>
+            {
+                Label = attr.Label
+            };
+
+            var intFields = propertyField.Query<IntegerField>().ToList();
+            var defaults = new[] { attr.DefaultX, attr.DefaultY };
+
+            for (var i = 0; i < intFields.Count && i < 2; i++)
+            {
+                var index = i;
+                intFields[i].labelElement.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (evt.clickCount == 2)
+                    {
+                        var v = property.Value;
+                        v[index] = defaults[index];
+                        property.Value = v;
+                    }
+                });
+            }
+
+            return (propertyField, propertyField.Bind(property));
         }
 
         static (VisualElement, IDisposable) CreateVector3FieldAndBind(ReactiveProperty<Vector3> property, Vector3ConfigPropertyAttribute attr)

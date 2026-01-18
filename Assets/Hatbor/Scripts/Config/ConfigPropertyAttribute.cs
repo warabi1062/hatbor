@@ -69,4 +69,17 @@ namespace Hatbor.Config
             DefaultZ = defaultZ;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Vector2IntConfigPropertyAttribute : ConfigPropertyAttribute
+    {
+        public int DefaultX { get; }
+        public int DefaultY { get; }
+
+        public Vector2IntConfigPropertyAttribute(string label, int defaultX = 0, int defaultY = 0) : base(label)
+        {
+            DefaultX = defaultX;
+            DefaultY = defaultY;
+        }
+    }
 }
