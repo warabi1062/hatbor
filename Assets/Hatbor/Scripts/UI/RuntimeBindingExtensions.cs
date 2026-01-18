@@ -10,7 +10,7 @@ namespace Hatbor.UI
         {
             var disposables = new CompositeDisposable();
 
-            property.Subscribe(v => field.value = v)
+            property.Subscribe(v => field.SetValueWithoutNotify(v))
                 .AddTo(disposables);
 
             void OnFieldValueChanged(ChangeEvent<T> e) => property.Value = e.newValue;
@@ -33,7 +33,7 @@ namespace Hatbor.UI
                 {
                     if (propertyTypeToFieldType(v, out var newValue))
                     {
-                        field.value = newValue;
+                        field.SetValueWithoutNotify(newValue);
                     }
                 })
                 .AddTo(disposables);
