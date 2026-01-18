@@ -20,7 +20,7 @@ namespace Hatbor.Config
         public ReactiveProperty<Vector3> CameraPosition => cameraPosition;
         [Vector3ConfigProperty("Rotation", 0f, 180f, 0f)]
         public ReactiveProperty<Vector3> CameraRotation => cameraRotation;
-        [SliderConfigProperty("Field of View", 30f, 1f, 120f)]
+        [SliderConfigProperty("FOV", 30f, 1f, 120f)]
         public ReactiveProperty<float> FieldOfView => fieldOfView;
     }
 }

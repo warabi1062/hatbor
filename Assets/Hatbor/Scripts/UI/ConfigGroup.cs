@@ -18,7 +18,16 @@ namespace Hatbor.UI
         {
             this.fileBrowser = fileBrowser;
 
-            label = new Label();
+            label = new Label
+            {
+                style =
+                {
+                    fontSize = 16,
+                    unityFontStyleAndWeight = FontStyle.Bold,
+                    marginTop = 12,
+                    marginBottom = 4
+                }
+            };
             hierarchy.Add(label);
             container = new VisualElement();
             hierarchy.Add(container);
@@ -104,6 +113,7 @@ namespace Hatbor.UI
             {
                 showInputField = true
             };
+            slider.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
             var disposables = new CompositeDisposable();
             slider.RegisterValueChangedCallback(evt => property.Value = evt.newValue);
             property.Subscribe(x => slider.SetValueWithoutNotify(x)).AddTo(disposables);
@@ -137,7 +147,27 @@ namespace Hatbor.UI
                 Label = attr.Label
             };
 
+            var vector2IntField = propertyField.Q<Vector2IntField>();
+            vector2IntField.style.flexDirection = FlexDirection.Column;
+            vector2IntField.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var inputContainer = vector2IntField.Q(className: "unity-composite-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.flexDirection = FlexDirection.Row;
+                inputContainer.style.marginTop = 4;
+            }
+
             var intFields = propertyField.Query<IntegerField>().ToList();
+            foreach (var f in intFields)
+            {
+                f.style.flexGrow = 0;
+                f.style.flexShrink = 0;
+                f.style.width = 120;
+                f.labelElement.style.minWidth = 15;
+                f.labelElement.style.paddingRight = 4;
+            }
+
             var defaults = new[] { attr.DefaultX, attr.DefaultY };
 
             for (var i = 0; i < intFields.Count && i < 2; i++)
@@ -164,7 +194,27 @@ namespace Hatbor.UI
                 Label = attr.Label
             };
 
+            var vector3Field = propertyField.Q<Vector3Field>();
+            vector3Field.style.flexDirection = FlexDirection.Column;
+            vector3Field.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var inputContainer = vector3Field.Q(className: "unity-composite-field__input");
+            if (inputContainer != null)
+            {
+                inputContainer.style.flexDirection = FlexDirection.Row;
+                inputContainer.style.marginTop = 4;
+            }
+
             var floatFields = propertyField.Query<FloatField>().ToList();
+            foreach (var f in floatFields)
+            {
+                f.style.flexGrow = 0;
+                f.style.flexShrink = 0;
+                f.style.width = 120;
+                f.labelElement.style.minWidth = 15;
+                f.labelElement.style.paddingRight = 4;
+            }
+
             var defaults = new[] { attr.DefaultX, attr.DefaultY, attr.DefaultZ };
 
             for (var i = 0; i < floatFields.Count && i < 3; i++)

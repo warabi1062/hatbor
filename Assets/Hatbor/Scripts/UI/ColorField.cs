@@ -23,7 +23,13 @@ namespace Hatbor.UI
         {
             style.flexDirection = FlexDirection.Column;
 
-            label = new Label();
+            label = new Label
+            {
+                style =
+                {
+                    unityFontStyleAndWeight = FontStyle.Bold
+                }
+            };
             hierarchy.Add(label);
 
             preview = new VisualElement

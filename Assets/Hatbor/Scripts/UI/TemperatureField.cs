@@ -34,18 +34,14 @@ namespace Hatbor.UI
         {
             style.flexDirection = FlexDirection.Column;
 
-            label = new Label();
-            hierarchy.Add(label);
-
-            preview = new VisualElement
+            label = new Label
             {
                 style =
                 {
-                    height = 20,
-                    marginBottom = 4
+                    unityFontStyleAndWeight = FontStyle.Bold
                 }
             };
-            hierarchy.Add(preview);
+            hierarchy.Add(label);
 
             var sliderRow = new VisualElement
             {
@@ -75,6 +71,17 @@ namespace Hatbor.UI
                 }
             };
             sliderRow.Add(valueLabel);
+
+            preview = new VisualElement
+            {
+                style =
+                {
+                    width = 50,
+                    height = 20,
+                    marginLeft = 4
+                }
+            };
+            sliderRow.Add(preview);
         }
 
         public IDisposable Bind(ReactiveProperty<float> property, float defaultValue)
