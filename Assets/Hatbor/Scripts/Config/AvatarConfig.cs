@@ -12,11 +12,8 @@ namespace Hatbor.Config
         public string PersistentKey => "AvatarConfig";
 
         [SerializeField] StringReactiveProperty path = new(DefaultPath);
-        [SerializeField] Vector3ReactiveProperty position = new(new UnityEngine.Vector3(0f, -1f, -2f));
 
         [FilePathConfigProperty("Choose Avatar", "vrm")]
         public ReactiveProperty<string> Path => path;
-        [ConfigProperty("Position")]
-        public ReactiveProperty<UnityEngine.Vector3> Position => position;
     }
 }
