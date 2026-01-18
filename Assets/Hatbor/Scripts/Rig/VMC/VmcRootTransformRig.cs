@@ -7,6 +7,8 @@ namespace Hatbor.Rig.VMC
 {
     public sealed class VmcRootTransformRig : IRootTransformRig
     {
+        const float SmoothFactor = 0.03f;
+
         readonly VmcServer vmcServer;
 
         [Inject]
@@ -19,7 +21,10 @@ namespace Hatbor.Rig.VMC
         {
             vmcServer.ProcessRead();
             var rootPose = vmcServer.RootPose;
-            instance.transform.SetLocalPositionAndRotation(rootPose.position, rootPose.rotation);
+            var t = instance.transform;
+            var smoothedPosition = Vector3.Lerp(t.localPosition, rootPose.position, SmoothFactor);
+            var smoothedRotation = Quaternion.Slerp(t.localRotation, rootPose.rotation, SmoothFactor);
+            t.SetLocalPositionAndRotation(smoothedPosition, smoothedRotation);
         }
     }
 }
