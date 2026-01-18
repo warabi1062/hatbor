@@ -40,10 +40,6 @@ namespace Hatbor.Camera
             renderConfig.Size
                 .Subscribe(Resize)
                 .AddTo(disposables);
-
-            renderConfig.TargetFrameRate
-                .Subscribe(fps => Application.targetFrameRate = Math.Max(fps, 30))
-                .AddTo(disposables);
         }
 
         void Resize(Vector2Int size)
