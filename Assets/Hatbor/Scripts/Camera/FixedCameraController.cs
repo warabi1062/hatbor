@@ -35,8 +35,7 @@ namespace Hatbor.Camera
 
         void ITickable.Tick()
         {
-            if (!config.Enabled.Value ||
-                EventSystem.current.currentSelectedGameObject != null)
+            if (EventSystem.current.currentSelectedGameObject != null)
             {
                 return;
             }

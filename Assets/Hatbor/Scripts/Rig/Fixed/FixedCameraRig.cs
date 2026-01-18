@@ -8,7 +8,7 @@ namespace Hatbor.Rig.Fixed
     {
         readonly FixedCameraConfig config;
 
-        public bool Enabled => config.Enabled.Value;
+        public bool Enabled => true;
         public int Order => 1; // after VmcCameraRig
 
         [Inject]

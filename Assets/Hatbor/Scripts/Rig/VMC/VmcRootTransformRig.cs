@@ -22,9 +22,8 @@ namespace Hatbor.Rig.VMC
             vmcServer.ProcessRead();
             var rootPose = vmcServer.RootPose;
             var t = instance.transform;
-            var smoothedPosition = Vector3.Lerp(t.localPosition, rootPose.position, SmoothFactor);
             var smoothedRotation = Quaternion.Slerp(t.localRotation, rootPose.rotation, SmoothFactor);
-            t.SetLocalPositionAndRotation(smoothedPosition, smoothedRotation);
+            t.localRotation = smoothedRotation;
         }
     }
 }

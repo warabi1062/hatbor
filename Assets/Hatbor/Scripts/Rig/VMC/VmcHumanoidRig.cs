@@ -33,9 +33,7 @@ namespace Hatbor.Rig.VMC
                 if (t == null) continue;
                 if (bone == HumanBodyBones.Hips)
                 {
-                    var smoothedPosition = Vector3.Lerp(t.localPosition, pose.position, SmoothFactor);
-                    var smoothedRotation = Quaternion.Slerp(t.localRotation, pose.rotation, SmoothFactor);
-                    t.SetLocalPositionAndRotation(smoothedPosition, smoothedRotation);
+                    t.localRotation = Quaternion.Slerp(t.localRotation, pose.rotation, SmoothFactor);
                 }
                 else
                 {
