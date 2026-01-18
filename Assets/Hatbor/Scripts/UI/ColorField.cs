@@ -7,13 +7,39 @@ namespace Hatbor.UI
 {
     public class ColorField : PropertyField<string, TextField>
     {
+        public ColorField()
+        {
+            field.isDelayed = true;
+        }
+
         public IDisposable Bind(ReactiveProperty<Color> property)
         {
-            return field.Bind(property, TryParseHtmlString, ToHtmlStringRGBA);
+            var disposables = new CompositeDisposable();
+
+            field.Bind(property, TryParseHtmlString, ToHtmlStringRGB)
+                .AddTo(disposables);
+
+            void OnFocusOut(FocusOutEvent _)
+            {
+                if (TryParseHtmlString(field.value, out var color) &&
+                    ToHtmlStringRGB(color, out var formatted))
+                {
+                    field.SetValueWithoutNotify(formatted);
+                }
+            }
+            field.RegisterCallback<FocusOutEvent>(OnFocusOut);
+            Disposable.Create(() => field.UnregisterCallback<FocusOutEvent>(OnFocusOut))
+                .AddTo(disposables);
+
+            return disposables;
         }
 
         static bool TryParseHtmlString(string input, out Color output)
         {
+            if (!input.StartsWith("#"))
+            {
+                input = "#" + input;
+            }
             if (ColorUtility.TryParseHtmlString(input, out output))
             {
                 return true;
@@ -22,9 +48,9 @@ namespace Hatbor.UI
             return false;
         }
 
-        static bool ToHtmlStringRGBA(Color input, out string output)
+        static bool ToHtmlStringRGB(Color input, out string output)
         {
-            output = "#" + ColorUtility.ToHtmlStringRGBA(input);
+            output = "#" + ColorUtility.ToHtmlStringRGB(input);
             return true;
         }
     }

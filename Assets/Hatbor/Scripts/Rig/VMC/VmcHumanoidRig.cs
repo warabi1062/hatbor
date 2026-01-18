@@ -8,6 +8,8 @@ namespace Hatbor.Rig.VMC
 {
     public sealed class VmcHumanoidRig : IHumanoidRig
     {
+        const float SmoothFactor = 0.05f;
+
         readonly VmcServer vmcServer;
 
         [Inject]
@@ -31,11 +33,11 @@ namespace Hatbor.Rig.VMC
                 if (t == null) continue;
                 if (bone == HumanBodyBones.Hips)
                 {
-                    t.SetLocalPositionAndRotation(pose.position, pose.rotation);
+                    t.localRotation = Quaternion.Slerp(t.localRotation, pose.rotation, SmoothFactor);
                 }
                 else
                 {
-                    t.localRotation = pose.rotation;
+                    t.localRotation = Quaternion.Slerp(t.localRotation, pose.rotation, SmoothFactor);
                 }
             }
         }
