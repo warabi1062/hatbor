@@ -7,7 +7,7 @@ namespace Hatbor.Rig.VMC
 {
     public sealed class VmcRootTransformRig : IRootTransformRig
     {
-        const float SmoothFactor = 0.03f;
+        const float SmoothFactor = 0.05f;
 
         readonly VmcServer vmcServer;
 

@@ -8,7 +8,7 @@ namespace Hatbor.Rig.VMC
 {
     public sealed class VmcHumanoidRig : IHumanoidRig
     {
-        const float SmoothFactor = 0.03f;
+        const float SmoothFactor = 0.05f;
 
         readonly VmcServer vmcServer;
 
