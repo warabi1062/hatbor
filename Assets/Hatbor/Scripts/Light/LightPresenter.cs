@@ -30,9 +30,6 @@ namespace Hatbor.Light
             config.Color
                 .Subscribe(x => light.color = x)
                 .AddTo(disposables);
-            config.ColorTemperature
-                .Subscribe(x => light.colorTemperature = x)
-                .AddTo(disposables);
             config.Intensity
                 .Subscribe(x => light.intensity = x)
                 .AddTo(disposables);
