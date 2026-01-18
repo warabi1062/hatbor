@@ -22,7 +22,7 @@ namespace Hatbor.Config
         [ConfigProperty("Spout2")]
 #endif
         public ReactiveProperty<bool> EnabledSharingTexture => enabledSharingTexture;
-        [ConfigProperty("Transparent Background")]
+        [ConfigProperty("TransparentBG")]
         public ReactiveProperty<bool> TransparentBackground => transparentBackground;
         [ConfigProperty("Mirror Preview")]
         public ReactiveProperty<bool> MirrorPreview => mirrorPreview;
