@@ -151,6 +151,15 @@ namespace Hatbor.UI
             vector2IntField.style.flexDirection = FlexDirection.Column;
             vector2IntField.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
 
+            var defaultValue = new Vector2Int(attr.DefaultX, attr.DefaultY);
+            vector2IntField.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = defaultValue;
+                }
+            });
+
             var inputContainer = vector2IntField.Q(className: "unity-composite-field__input");
             if (inputContainer != null)
             {
@@ -197,6 +206,15 @@ namespace Hatbor.UI
             var vector3Field = propertyField.Q<Vector3Field>();
             vector3Field.style.flexDirection = FlexDirection.Column;
             vector3Field.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var defaultValue = new Vector3(attr.DefaultX, attr.DefaultY, attr.DefaultZ);
+            vector3Field.labelElement.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.clickCount == 2)
+                {
+                    property.Value = defaultValue;
+                }
+            });
 
             var inputContainer = vector3Field.Q(className: "unity-composite-field__input");
             if (inputContainer != null)
