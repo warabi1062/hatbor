@@ -61,6 +61,10 @@ namespace Hatbor.UI
             {
                 (ReactiveProperty<bool> p, _) =>
                     CreateFieldAndBind<bool, Toggle>(p, attr.Label),
+                (ReactiveProperty<float> p, TemperatureConfigPropertyAttribute a) =>
+                    CreateTemperatureFieldAndBind(p, a),
+                (ReactiveProperty<float> p, SliderConfigPropertyAttribute a) =>
+                    CreateSliderFieldAndBind(p, a),
                 (ReactiveProperty<float> p, _) =>
                     CreateFieldAndBind<float, FloatField>(p, attr.Label),
                 (ReactiveProperty<int> p, _) =>
@@ -88,6 +92,29 @@ namespace Hatbor.UI
                 Label = label
             };
             return (propertyField, propertyField.Bind(property));
+        }
+
+        static (VisualElement, IDisposable) CreateSliderFieldAndBind(ReactiveProperty<float> property, SliderConfigPropertyAttribute attr)
+        {
+            var slider = new Slider(attr.Label, attr.Min, attr.Max)
+            {
+                showInputField = true
+            };
+            var disposables = new CompositeDisposable();
+            slider.RegisterValueChangedCallback(evt => property.Value = evt.newValue);
+            property.Subscribe(x => slider.SetValueWithoutNotify(x)).AddTo(disposables);
+            return (slider, disposables);
+        }
+
+        static (VisualElement, IDisposable) CreateTemperatureFieldAndBind(ReactiveProperty<float> property, TemperatureConfigPropertyAttribute attr)
+        {
+            var field = new TemperatureField
+            {
+                Label = attr.Label,
+                Min = attr.Min,
+                Max = attr.Max
+            };
+            return (field, field.Bind(property));
         }
 
         static (VisualElement, IDisposable) CreateColorFieldAndBind(ReactiveProperty<Color> property, string label)

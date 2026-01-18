@@ -24,4 +24,30 @@ namespace Hatbor.Config
             Extension = extension;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class SliderConfigPropertyAttribute : ConfigPropertyAttribute
+    {
+        public float Min { get; }
+        public float Max { get; }
+
+        public SliderConfigPropertyAttribute(string label, float min, float max) : base(label)
+        {
+            Min = min;
+            Max = max;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class TemperatureConfigPropertyAttribute : ConfigPropertyAttribute
+    {
+        public float Min { get; }
+        public float Max { get; }
+
+        public TemperatureConfigPropertyAttribute(string label, float min = 1000f, float max = 20000f) : base(label)
+        {
+            Min = min;
+            Max = max;
+        }
+    }
 }

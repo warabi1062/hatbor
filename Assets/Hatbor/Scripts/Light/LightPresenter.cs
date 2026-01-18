@@ -24,11 +24,14 @@ namespace Hatbor.Light
 
         void IStartable.Start()
         {
+            light.useColorTemperature = true;
+            light.color = Color.white;
+
             config.Direction
                 .Subscribe(x => light.transform.rotation = Quaternion.Euler(x))
                 .AddTo(disposables);
-            config.Color
-                .Subscribe(x => light.color = x)
+            config.Temperature
+                .Subscribe(x => light.colorTemperature = x)
                 .AddTo(disposables);
             config.Intensity
                 .Subscribe(x => light.intensity = x)

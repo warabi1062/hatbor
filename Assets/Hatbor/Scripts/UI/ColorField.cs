@@ -5,53 +5,87 @@ using UnityEngine.UIElements;
 
 namespace Hatbor.UI
 {
-    public class ColorField : PropertyField<string, TextField>
+    public class ColorField : VisualElement
     {
+        readonly Label label;
+        readonly Slider sliderR;
+        readonly Slider sliderG;
+        readonly Slider sliderB;
+        readonly VisualElement preview;
+
+        public string Label
+        {
+            get => label.text;
+            set => label.text = value;
+        }
+
         public ColorField()
         {
-            field.isDelayed = true;
+            style.flexDirection = FlexDirection.Column;
+
+            label = new Label();
+            hierarchy.Add(label);
+
+            preview = new VisualElement
+            {
+                style =
+                {
+                    height = 20,
+                    marginBottom = 4
+                }
+            };
+            hierarchy.Add(preview);
+
+            sliderR = CreateSlider("R");
+            sliderG = CreateSlider("G");
+            sliderB = CreateSlider("B");
+
+            hierarchy.Add(sliderR);
+            hierarchy.Add(sliderG);
+            hierarchy.Add(sliderB);
+        }
+
+        static Slider CreateSlider(string label)
+        {
+            return new Slider(label, 0f, 1f)
+            {
+                showInputField = true
+            };
         }
 
         public IDisposable Bind(ReactiveProperty<Color> property)
         {
             var disposables = new CompositeDisposable();
+            var updating = false;
 
-            field.Bind(property, TryParseHtmlString, ToHtmlStringRGB)
-                .AddTo(disposables);
-
-            void OnFocusOut(FocusOutEvent _)
+            void UpdateProperty()
             {
-                if (TryParseHtmlString(field.value, out var color) &&
-                    ToHtmlStringRGB(color, out var formatted))
-                {
-                    field.SetValueWithoutNotify(formatted);
-                }
+                if (updating) return;
+                updating = true;
+                var color = new Color(sliderR.value, sliderG.value, sliderB.value);
+                property.Value = color;
+                preview.style.backgroundColor = color;
+                updating = false;
             }
-            field.RegisterCallback<FocusOutEvent>(OnFocusOut);
-            Disposable.Create(() => field.UnregisterCallback<FocusOutEvent>(OnFocusOut))
-                .AddTo(disposables);
+
+            void UpdateSliders(Color color)
+            {
+                if (updating) return;
+                updating = true;
+                sliderR.SetValueWithoutNotify(color.r);
+                sliderG.SetValueWithoutNotify(color.g);
+                sliderB.SetValueWithoutNotify(color.b);
+                preview.style.backgroundColor = color;
+                updating = false;
+            }
+
+            sliderR.RegisterValueChangedCallback(_ => UpdateProperty());
+            sliderG.RegisterValueChangedCallback(_ => UpdateProperty());
+            sliderB.RegisterValueChangedCallback(_ => UpdateProperty());
+
+            property.Subscribe(UpdateSliders).AddTo(disposables);
 
             return disposables;
-        }
-
-        static bool TryParseHtmlString(string input, out Color output)
-        {
-            if (!input.StartsWith("#"))
-            {
-                input = "#" + input;
-            }
-            if (ColorUtility.TryParseHtmlString(input, out output))
-            {
-                return true;
-            }
-            output = Color.white;
-            return false;
-        }
-
-        static bool ToHtmlStringRGB(Color input, out string output)
-        {
-            output = "#" + ColorUtility.ToHtmlStringRGB(input);
-            return true;
         }
     }
 }
