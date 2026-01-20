@@ -9,6 +9,7 @@
         "Hatbor.Config",
         "Hatbor.HID",
         "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

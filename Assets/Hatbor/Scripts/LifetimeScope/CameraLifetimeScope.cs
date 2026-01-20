@@ -30,6 +30,7 @@ namespace Hatbor.LifetimeScope
             builder.RegisterEntryPoint<TextureStreamingSender>(Lifetime.Singleton);
 
             builder.RegisterEntryPoint<FixedCameraController>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<PostProcessingController>(Lifetime.Singleton);
 
             builder.RegisterEntryPoint<Camera.Camera>(Lifetime.Singleton);
             builder.RegisterEntryPoint<CameraCanvas>(Lifetime.Singleton);
