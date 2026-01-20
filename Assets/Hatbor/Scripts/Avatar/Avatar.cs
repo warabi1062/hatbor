@@ -13,7 +13,7 @@ namespace Hatbor.Avatar
 {
     public sealed class Avatar : IAsyncStartable, ITickable, IDisposable
     {
-        static readonly Vector3 Position = new(0f, -1f, -2f);
+        static readonly Vector3 Position = Vector3.zero;
 
         readonly string path;
         readonly AvatarRig rig;

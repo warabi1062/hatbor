@@ -10,13 +10,13 @@ namespace Hatbor.Config
         public string PersistentKey => "HidCameraConfig";
 
         [SerializeField]
-        Vector3ReactiveProperty cameraPosition = new (Vector3.zero);
+        Vector3ReactiveProperty cameraPosition = new (new Vector3(0f, 1f, 2f));
         [SerializeField]
         Vector3ReactiveProperty cameraRotation = new (new Vector3(0f, 180f, 0f));
         [SerializeField]
         FloatReactiveProperty fieldOfView = new (30f);
 
-        [Vector3ConfigProperty("Position", 0f, 0f, 0f)]
+        [Vector3ConfigProperty("Position", 0f, 1f, 2f)]
         public ReactiveProperty<Vector3> CameraPosition => cameraPosition;
         [Vector3ConfigProperty("Rotation", 0f, 180f, 0f)]
         public ReactiveProperty<Vector3> CameraRotation => cameraRotation;
