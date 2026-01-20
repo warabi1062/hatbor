@@ -5,6 +5,7 @@
         "VContainer",
         "UniTask",
         "UniRx",
+        "Hatbor.Config",
         "Hatbor.Rig",
         "Hatbor.VMC",
         "VRM10",

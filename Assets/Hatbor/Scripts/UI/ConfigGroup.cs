@@ -94,6 +94,8 @@ namespace Hatbor.UI
                     CreateFilePathFieldAndBind(p, a),
                 (Action p, _) =>
                     CreateButtonAndRegister(p, attr),
+                _ when IsEnumReactiveProperty(property, out var enumType) =>
+                    CreateEnumFieldAndBindDynamic(property, attr.Label, enumType),
                 _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
             };
         }
@@ -300,6 +302,46 @@ namespace Hatbor.UI
             };
             var disposable = button.OnClickAsObservable().Subscribe(_ => onClicked());
             return (button, disposable);
+        }
+
+        static bool IsEnumReactiveProperty(object property, out Type enumType)
+        {
+            enumType = null;
+            var type = property.GetType();
+            if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(ReactiveProperty<>))
+                return false;
+
+            var genericArg = type.GetGenericArguments()[0];
+            if (!genericArg.IsEnum)
+                return false;
+
+            enumType = genericArg;
+            return true;
+        }
+
+        static (VisualElement, IDisposable) CreateEnumFieldAndBindDynamic(object property, string label, Type enumType)
+        {
+            var method = typeof(ConfigGroup)
+                .GetMethod(nameof(CreateEnumFieldAndBind), BindingFlags.NonPublic | BindingFlags.Static)
+                ?.MakeGenericMethod(enumType);
+
+            return ((VisualElement, IDisposable))method?.Invoke(null, new[] { property, label });
+        }
+
+        static (VisualElement, IDisposable) CreateEnumFieldAndBind<TEnum>(ReactiveProperty<TEnum> property, string label)
+            where TEnum : struct, Enum
+        {
+            var enumField = new EnumField(label, property.Value)
+            {
+                style = { flexGrow = 1 }
+            };
+            enumField.labelElement.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+            var disposables = new CompositeDisposable();
+            enumField.RegisterValueChangedCallback(evt => property.Value = (TEnum)evt.newValue);
+            property.Subscribe(v => enumField.SetValueWithoutNotify(v)).AddTo(disposables);
+
+            return (enumField, disposables);
         }
     }
 }
